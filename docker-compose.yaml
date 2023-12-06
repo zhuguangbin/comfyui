@@ -48,7 +48,7 @@ services:
       - /etc/group:/etc/group:ro
       - ./config/rclone:/etc/rclone
       ## Workspace
-      - ./workspace:${WORKSPACE:-/workspace/}:rshared
+      - ${WORKSPACE_HOST:-./workspace}:${WORKSPACE:-/workspace/}:rshared
       # You can share /workspace/storage with other non-ComfyUI containers. See README
       #- /path/to/common_storage:${WORKSPACE:-/workspace/}storage/:rshared
       
@@ -73,6 +73,7 @@ services:
         - DIRECT_ADDRESS=${DIRECT_ADDRESS:-127.0.0.1}
         - DIRECT_ADDRESS_GET_WAN=${DIRECT_ADDRESS_GET_WAN:-false}
         - WORKSPACE=${WORKSPACE:-/workspace}
+        - WORKSPACE_HOST=${WORKSPACE_HOST:-./workspace}
         - WORKSPACE_SYNC=${WORKSPACE_SYNC:-true}
         - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
         - CF_QUICK_TUNNELS=${CF_QUICK_TUNNELS:-true}
@@ -92,3 +93,9 @@ services:
         - JUPYTER_PORT_LOCAL=${JUPYTER_PORT_LOCAL:-18888}
         - JUPYTER_METRICS_PORT=${JUPYTER_METRICS_PORT:-28888}
         - SERVERLESS=${SERVERLESS:-false}
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu]
